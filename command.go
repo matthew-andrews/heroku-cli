@@ -244,3 +244,26 @@ var commandsListCmd = &Command{
 		}
 	},
 }
+
+var commandFlagsCmd = &Command{
+	Topic:       "commands",
+	Command:     "flags",
+	Hidden:      true,
+	Args:        []Arg{{Name: "command"}},
+	Description: "list command flags",
+	Run: func(ctx *Context) {
+		cli.LoadPlugins(GetPlugins())
+		_, command := cli.ParseCmd(ctx.Args.(map[string]string)["command"])
+		for _, flag := range command.Flags {
+			if flag.Hidden {
+				continue
+			}
+			if flag.Char != "" {
+				Println("-" + flag.Char)
+			}
+			if flag.Name != "" {
+				Println("--" + flag.Name)
+			}
+		}
+	},
+}
